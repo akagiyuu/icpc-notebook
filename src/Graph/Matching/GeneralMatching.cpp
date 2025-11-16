@@ -1,10 +1,7 @@
-// General matching on graph
-
 const int maxv = 1000;
 const int maxe = 50000;
 
-// Index from 1
-// Directed
+// Index from 1, Directed
 struct EdmondsLawler {
     int n, E, start, finish, newRoot, qsize, adj[maxe], next[maxe], last[maxv], mat[maxv], que[maxv], dad[maxv], root[maxv];
     bool inque[maxv], inpath[maxv], inblossom[maxv];

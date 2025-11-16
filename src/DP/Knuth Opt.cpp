@@ -16,7 +16,6 @@ int KNUTH() {
         ... // Initialize dp[i][i] according to the problem
     }
 
-
     for (int i = N-2; i >= 0; i--) {
         for (int j = i+1; j < N; j++) {
             int mn = INT_MAX;

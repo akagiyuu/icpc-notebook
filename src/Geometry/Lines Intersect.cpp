@@ -1,23 +1,18 @@
-struct pt {
-    double x, y;
-};
+struct pt { double x, y; };
 
 struct seg {
     pt p, q;
     int id;
 
     double get_y(double x) const {
-        if (abs(p.x - q.x) < EPS)
-            return p.y;
+        if (abs(p.x - q.x) < EPS) return p.y;
         return p.y + (q.y - p.y) * (x - p.x) / (q.x - p.x);
     }
 };
 
 bool intersect1d(double l1, double r1, double l2, double r2) {
-    if (l1 > r1)
-        swap(l1, r1);
-    if (l2 > r2)
-        swap(l2, r2);
+    if (l1 > r1) swap(l1, r1);
+    if (l2 > r2) swap(l2, r2);
     return max(l1, l2) <= min(r1, r2) + EPS;
 }
 
@@ -48,8 +43,7 @@ struct event {
     event(double x, int tp, int id) : x(x), tp(tp), id(id) {}
 
     bool operator<(const event& e) const {
-        if (abs(x - e.x) > EPS)
-            return x < e.x;
+        if (abs(x - e.x) > EPS) return x < e.x;
         return tp > e.tp;
     }
 };

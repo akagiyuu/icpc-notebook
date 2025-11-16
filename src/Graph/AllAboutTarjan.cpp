@@ -1,12 +1,4 @@
-/*
- * Notes:
- *  - 0-based node indexing throughout (nodes: 0..n-1)
- */
-
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
+// Notes: 0-based node indexing
 // ---------------- Tarjan SCC (recursive) ----------------
 struct TarjanSCC {
     int n;
