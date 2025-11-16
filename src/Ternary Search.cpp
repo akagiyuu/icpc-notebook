@@ -1,5 +1,5 @@
 template<class F>
-int ternSearch(int a, int b, F f) {
+int ternary_search(int a, int b, F f) {
 	assert(a <= b);
 	while (b - a >= 5) {
 		int mid = (a + b) / 2;
