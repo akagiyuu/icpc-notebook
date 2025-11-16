@@ -20,7 +20,9 @@ jobs:
 
       - run: bun install -g codes2pdf
 
-      - run: sudo apt-get install texlive -y
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: texlive
 
       - run: codes2pdf ./src -a "FPTU-SRO"
 
