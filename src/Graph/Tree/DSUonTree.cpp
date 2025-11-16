@@ -1,7 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
 int n;
 vector<vector<int>> g;
 vector<int> val;    

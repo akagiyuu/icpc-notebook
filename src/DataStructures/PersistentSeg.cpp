@@ -1,7 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
 struct PersistentSeg {
     struct Node {
         ll sum;
@@ -19,12 +15,10 @@ struct PersistentSeg {
         seg.reserve(1 << 20); // recommend to reserve approximate size: (n + updates*logn)
         seg.emplace_back();   // index 0 is null node with sum=0
     }
-
     int newNode() {
         seg.emplace_back();
         return (int)seg.size() - 1;
     }
-
     // build from 1..n (arr 1-indexed). returns root index.
     int build(const vector<ll> &arr) {
         function<int(int,int)> build_rec = [&](int l, int r)->int {
@@ -42,7 +36,6 @@ struct PersistentSeg {
         if (n <= 0) return 0;
         return build_rec(1, n);
     }
-
     // point add: create a new version from prev_root, adding 'delta' at position pos
     int update_add(int prev_root, int pos, ll delta) {
         function<int(int,int,int)> upd = [&](int prev, int l, int r)->int {
@@ -60,13 +53,11 @@ struct PersistentSeg {
         };
         return upd(prev_root, 1, n);
     }
-
     // point assign: set position pos to value 'val' (we implement by reading old val via query if needed)
     int update_set(int prev_root, int pos, ll val) {
         ll cur = query_point(prev_root, pos);
         return update_add(prev_root, pos, val - cur);
     }
-
     // query sum on version 'root' in [ql, qr]
     ll query(int root, int ql, int qr) const {
         function<ll(int,int,int)> qry = [&](int id, int l, int r)->ll {
@@ -78,7 +69,6 @@ struct PersistentSeg {
         if (root == 0) return 0;
         return qry(root, 1, n);
     }
-
     // query single point value
     ll query_point(int root, int pos) const {
         function<ll(int,int,int)> qp = [&](int id, int l, int r)->ll {
@@ -90,7 +80,6 @@ struct PersistentSeg {
         };
         return qp(root, 1, n);
     }
-
     // kth: find smallest index pos such that prefix_sum(pos) >= k (1-indexed)
     // requires that tree stores **non-negative counts** (e.g., frequency tree)
     int kth(int root, ll k) const {
