@@ -1,6 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 const double PI = acos(-1);
 const double EPS = 1e-8;
 const double INF = 1e18;
@@ -8,10 +5,7 @@ const double INF = 1e18;
 typedef complex<double> P;
 typedef vector<P> G;
 struct L : public vector<P> {
-	L(const P &a, const P &b) {
-		push_back(a);
-		push_back(b);
-	}
+	L(const P &a, const P &b) { push_back(a); push_back(b); }
 	L() {}
 };
 struct C {
@@ -23,53 +17,36 @@ struct C {
 #define curr(P, i) P[i]
 #define next(P, i) P[(i + 1) % P.size()]
 
-bool operator<(const P &a, const P &b)
-{
+bool operator<(const P &a, const P &b) {
 	// if (abs(a-b)<EPS) return 0;
 	return real(a) != real(b) ? real(a) < real(b) : imag(a) < imag(b);
 }
-double cross(const P &a, const P &b)
-{
-	return imag(conj(a) * b);
-}
-double dot(const P &a, const P &b)
-{
-	return real(conj(a) * b);
-}
-int ccw(P a, P b, P c)
-{
+double cross(const P &a, const P &b) { return imag(conj(a) * b); }
+double dot(const P &a, const P &b) { return real(conj(a) * b); }
+int ccw(P a, P b, P c) {
 	b -= a;
 	c -= a;
-	if (cross(b, c) > 0)
-		return +1; // counter clockwise
-	if (cross(b, c) < 0)
-		return -1; // clockwise
-	if (dot(b, c) < 0)
-		return +2; // c--a--b on line
-	if (norm(b) < norm(c))
-		return -2; // a--b--c on line
+	if (cross(b, c) > 0) return +1; // counter clockwise
+	if (cross(b, c) < 0) return -1; // clockwise
+	if (dot(b, c) < 0) return +2; // c--a--b on line
+	if (norm(b) < norm(c)) return -2; // a--b--c on line
 	return 0;
 }
 
-bool intersectLL(const L &l, const L &m)
-{
+bool intersectLL(const L &l, const L &m) {
 	return abs(cross(l[1] - l[0], m[1] - m[0])) > EPS || // non-parallel
 	       abs(cross(l[1] - l[0], m[0] - l[0])) < EPS; // same line
 }
-bool intersectLS(const L &l, const L &s)
-{
+bool intersectLS(const L &l, const L &s) {
 	return cross(l[1] - l[0], s[0] - l[0]) * cross(l[1] - l[0], s[1] - l[0]) < EPS;
 }
-bool intersectLP(const L &l, const P &p)
-{
+bool intersectLP(const L &l, const P &p) {
 	return abs(cross(l[1] - p, l[0] - p)) < EPS;
 }
-bool intersectSS(const L &s, const L &t)
-{
+bool intersectSS(const L &s, const L &t) {
 	return ccw(s[0], s[1], t[0]) * ccw(s[0], s[1], t[1]) <= 0 && ccw(t[0], t[1], s[0]) * ccw(t[0], t[1], s[1]) <= 0;
 }
-bool intersectSS2(const L &s, const L &t)
-{
+bool intersectSS2(const L &s, const L &t) {
 	for (int i = 0; i < 2; i++) {
 		if (ccw(s[0], s[1], t[i]) == 0) {
 			int c = ccw(s[0], s[1], t[!i]);
@@ -85,60 +62,45 @@ bool intersectSS2(const L &s, const L &t)
 	}
 	return ccw(s[0], s[1], t[0]) * ccw(s[0], s[1], t[1]) <= 0 && ccw(t[0], t[1], s[0]) * ccw(t[0], t[1], s[1]) <= 0;
 }
-bool intersectSP(const L &s, const P &p)
-{
+bool intersectSP(const L &s, const P &p) {
 	return abs(s[0] - p) + abs(s[1] - p) - abs(s[1] - s[0]) < EPS; // triangle inequality
 }
-P projection(const L &l, const P &p)
-{
+P projection(const L &l, const P &p) {
 	double t = dot(p - l[0], l[0] - l[1]) / norm(l[0] - l[1]);
 	return l[0] + t * (l[0] - l[1]);
 }
-P reflection(const L &l, const P &p)
-{
-	return p + P(2, 0) * (projection(l, p) - p);
+P reflection(const L &l, const P &p) {
+    return p + P(2, 0) * (projection(l, p) - p);
 }
-double distanceLP(const L &l, const P &p)
-{
-	return abs(p - projection(l, p));
-}
-double distanceLL(const L &l, const L &m)
-{
-	return intersectLL(l, m) ? 0 : distanceLP(l, m[0]);
-}
-double distanceLS(const L &l, const L &s)
-{
+double distanceLP(const L &l, const P &p) { return abs(p - projection(l, p)); }
+double distanceLL(const L &l, const L &m) { return intersectLL(l, m) ? 0 : distanceLP(l, m[0]); }
+double distanceLS(const L &l, const L &s) {
 	if (intersectLS(l, s)) return 0;
 	return min(distanceLP(l, s[0]), distanceLP(l, s[1]));
 }
-double distanceSP(const L &s, const P &p)
-{
+double distanceSP(const L &s, const P &p) {
 	const P r = projection(s, p);
 	if (intersectSP(s, r)) return abs(r - p);
 	return min(abs(s[0] - p), abs(s[1] - p));
 }
-double distanceSS(const L &s, const L &t)
-{
+double distanceSS(const L &s, const L &t) {
 	if (intersectSS(s, t)) return 0;
 	return min(min(distanceSP(s, t[0]), distanceSP(s, t[1])), min(distanceSP(t, s[0]), distanceSP(t, s[1])));
 }
-P crosspoint(const L &l, const L &m)
-{
+P crosspoint(const L &l, const L &m) {
 	double A = cross(l[1] - l[0], m[1] - m[0]);
 	double B = cross(l[1] - l[0], l[1] - m[0]);
 	if (abs(A) < EPS && abs(B) < EPS) return m[0]; // same line
 	assert(abs(A) >= EPS);
 	return m[0] + B / A * (m[1] - m[0]);
 }
-double area(const G &g)
-{
+double area(const G &g) {
 	double A = 0;
 	for (int i = 0; i < (int)g.size(); ++i)
 		A += cross(g[i], next(g, i));
 	return abs(A / 2);
  }
-G convex_hull(G ps)
-{
+G convex_hull(G ps) {
 	if (ps.size() <= 1) return ps;
 	sort(ps.begin(), ps.end());
 
@@ -186,8 +148,7 @@ G convex_hull(G ps)
 	if (res.empty()) return a;
 	return res;
 }
-G convex_cut(const G &g, const L &l)
-{
+G convex_cut(const G &g, const L &l) {
 	G Q;
 	for (int i = 0; i < (int)g.size(); i++) {
 		P A = curr(g, i), B = next(g, i);
@@ -198,8 +159,7 @@ G convex_cut(const G &g, const L &l)
 	}
 	return Q;
 }
-P centroid(const vector<P> &v)
-{
+P centroid(const vector<P> &v) {
 	double S = 0;
 	P res = P(0, 0);
 	for (int i = 0; i < (int)v.size(); i++) {
@@ -213,9 +173,7 @@ P centroid(const vector<P> &v)
 	res /= 6 * S;
 	return res;
 }
-
-double min_manhattanSP(const L &l, const P &p)
-{
+double min_manhattanSP(const L &l, const P &p) {
 	double res = INF;
 	L xl = L(p, p + P(1, 0));
 	if (intersectLS(xl, l)) {
@@ -233,16 +191,13 @@ double min_manhattanSP(const L &l, const P &p)
 	res = min(res, abs(l[1].real() - p.real()) + abs(l[1].imag() - p.imag()));
 	return res;
 }
-
-bool convex_contain(const G &g, const P &p)
-{
+bool convex_contain(const G &g, const P &p) {
 	for (int i = 0; i < (int)g.size(); i++)
 		if (ccw(g[i], next(g, i), p) == -1)
 			return 0;
 	return 1;
 }
-bool intersectGG(const G &g1, const G &g2)
-{
+bool intersectGG(const G &g1, const G &g2) {
 	if (convex_contain(g1, g2[0])) return 1;
 	if (convex_contain(g2, g1[0])) return 1;
 	for (int i = 0; i < (int)g1.size(); i++) {
@@ -253,9 +208,7 @@ bool intersectGG(const G &g1, const G &g2)
 	}
 	return 0;
 }
-
-double distanceGP(const G &g, const P &p)
-{
+double distanceGP(const G &g, const P &p) {
 	if (convex_contain(g, p)) return 0;
 	double res = INF;
 	for (int i = 0; i < (int)g.size(); i++) {
@@ -263,36 +216,25 @@ double distanceGP(const G &g, const P &p)
 	}
 	return res;
 }
-
-L bisector(const P &a, const P &b)
-{
+L bisector(const P &a, const P &b) {
 	P A = (a + b) * P(0.5, 0);
 	return L(A, A + (b - a) * P(0, PI / 2));
 }
-
-G voronoi_cell(G g, const vector<P> &v, int s)
-{
+G voronoi_cell(G g, const vector<P> &v, int s) {
 	for (int i = 0; i < (int)v.size(); i++)
 		if (i != s)
 			g = convex_cut(g, bisector(v[s], v[i]));
 	return g;
 }
-
-double angle(const P &a, const P &b)
-{ // Goc dinh huong a -> b [0,2pi)
+double angle(const P &a, const P &b) { // Goc dinh huong a -> b [0,2pi)
 	double ret = arg(b) - arg(a);
 	return (ret >= 0) ? ret : ret + 2 * PI;
 }
-double angle2(const P &a, const P &b)
-{
-	return min(angle(a, b), angle(b, a));
-}
+double angle2(const P &a, const P &b) { return min(angle(a, b), angle(b, a)); }
 
-P rotate(P p, double ang)
-{
+P rotate(P p, double ang) {
 	return p * P(cos(ang), sin(ang));
 }
-L rotate(L l, double ang)
-{
+L rotate(L l, double ang) {
 	return L(rotate(l[0], ang), rotate(l[1], ang));
 }
