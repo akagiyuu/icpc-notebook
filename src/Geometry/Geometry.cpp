@@ -1,3 +1,7 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
 const double PI = acos(-1);
 const double EPS = 1e-8;
 const double INF = 1e18;
@@ -237,4 +241,54 @@ P rotate(P p, double ang) {
 }
 L rotate(L l, double ang) {
 	return L(rotate(l[0], ang), rotate(l[1], ang));
+}
+int intersectCL(const C &c, const L &l, vector<P> &res) {
+    P pr = projection(l, c.p); // projection of center onto line
+    double d = abs(pr - c.p);
+    if (d > c.r + EPS) return 0;
+    if (abs(d - c.r) < EPS) {
+        res.push_back(pr);
+        return 1;
+    }
+    double len = abs(l[1] - l[0]);
+    P dir = (l[1] - l[0]) / len; // unit direction along line
+    double h = sqrt(max(0.0, c.r * c.r - d * d));
+    res.push_back(pr + dir * h);
+    res.push_back(pr - dir * h);
+    return 2;
+}
+int intersectCC(const C &c1, const C &c2, vector<P> &res) {
+    double d = abs(c2.p - c1.p);
+    if (d < EPS) { // concentric
+        if (abs(c1.r - c2.r) < EPS) return -1; // coincident
+        return 0;
+    }
+    if (d > c1.r + c2.r + EPS) return 0; // too far
+    if (d < fabs(c1.r - c2.r) - EPS) return 0; // one inside another
+    double a = (c1.r*c1.r - c2.r*c2.r + d*d) / (2.0 * d);
+    P mid = c1.p + (c2.p - c1.p) * (a / d); // point on radical line
+    P perp = (c2.p - c1.p) * P(0, 1); // rotated by +90 deg
+    L line(mid - perp, mid + perp);   // any two distinct points on the radical line
+    return intersectCL(c1, line, res);
+}
+vector<L> tangentCC(const C &c1, const C &c2) {
+    vector<L> res;
+    P p1 = c1.p, p2 = c2.p;
+    double r1 = c1.r, r2 = c2.r;
+    double d = abs(p2 - p1);
+    if (d < EPS) return res; // concentric: no (distinct) tangents
+    P u = (p2 - p1) / d;
+    for (int s = -1; s <= 1; s += 2) { // s = -1 (internal tangents), s = +1 (external tangents)
+        double r = (r1 - s * r2) / d;
+        if (r * r > 1 + EPS) continue; // no solution
+        double h = sqrt(max(0.0, 1 - r * r));
+        P v = u * P(0, 1); // perpendicular to u
+        for (int sign = -1; sign <= 1; sign += 2) {
+            P dir = u * r + v * (h * sign); // unit vector
+            P t1 = p1 + dir * r1;
+            P t2 = p2 + dir * (r2 * s);
+            res.push_back(L(t1, t2));
+        }
+    }
+    return res;
 }
