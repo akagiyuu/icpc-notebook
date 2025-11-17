@@ -1,0 +1,27 @@
+\scriptsize
+\[
+    f(n) = \sum_{k = 0}^{\lfloor\frac{n - 1}{2}\rfloor} \binom{n - k - 1}{k}
+\]
+\[
+    \sum_{i = 0}^{n} f(i) = f(n + 2) - 1 \qquad
+    \sum_{i = 1}^{n} f(2i) = f(2n + 1) - 1
+\]
+\[
+    \sum_{i = 0}^{n} {f(i)}^2 = f(n)f(n + 1) \qquad
+    \sum_{i = 1}^{2n - 1} f(i)f(i + 1) = {f(2n)}^2
+\]
+\[
+    {f(n)}^2 - f(n - r) f(n + r) = {(-1)}^{n - r} {f(r)} ^2
+\]
+\[
+    f(n + k) f(m - k) - f(n)f(m) = {(-1)}^n f(m - n - k) f(k)
+\]
+\[
+    {(-1)}^n f(m - n) = f(m) f(n + 1) - f(m + 1) f(n)
+\]
+\[
+    f(m + n) = f(m + 1) f(n) + f(m) f(n + 1)
+\]
+\[
+    \gcd(f(m), f(n)) = f(\gcd(m, n))
+\]
