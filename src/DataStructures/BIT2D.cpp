@@ -12,12 +12,11 @@ struct fenwick_2d {
     void update(int x, int y, int val) {
         for(int i = x; i <= N; i +=(i&(-i))) {
             int l = lower_bound(BIT[i].begin(), BIT[i].end(), y) - BIT[i].begin() + 1;
-            for(int j = l; j <= (int)BIT[i].size(); j+=(j&(-j)))
+            for(int j = l; j <= BIT[i].size(); j+=(j&(-j)))
                 f[i][j - 1] = max(f[i][j - 1], val);
         }
     }
-    int get(int x, int y)
-    {
+    int get(int x, int y) {
         int res = 0;
         for(int i = x; i >= 1; i -=(i&(-i))) {
             int l = lower_bound(BIT[i].begin(), BIT[i].end(), y) - BIT[i].begin() + 1;

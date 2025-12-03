@@ -1,7 +1,3 @@
-#include<bits/stdc++.h>
-
-using namespace std;
-
 const double PI = acos(-1);
 const double EPS = 1e-8;
 const double INF = 1e18;
@@ -18,11 +14,7 @@ struct C {
 	C(const P &p, double r) : p(p) , r(r) {}
 };
 
-#define curr(P, i) P[i]
-#define next(P, i) P[(i + 1) % P.size()]
-
 namespace std {bool operator<(const P &a, const P &b) {
-	// if (abs(a-b)<EPS) return 0;
 	return real(a) != real(b) ? real(a) < real(b) : imag(a) < imag(b);
 }}
 double cross(const P &a, const P &b) { return imag(conj(a) * b); }
@@ -36,7 +28,6 @@ int ccw(P a, P b, P c) {
 	if (norm(b) < norm(c)) return -2; // a--b--c on line
 	return 0;
 }
-
 bool intersectLL(const L &l, const L &m) {
 	return abs(cross(l[1] - l[0], m[1] - m[0])) > EPS || // non-parallel
 	       abs(cross(l[1] - l[0], m[0] - l[0])) < EPS; // same line
@@ -104,65 +95,6 @@ double area(const G &g) {
 		A += cross(g[i], next(g, i));
 	return abs(A / 2);
  }
-G convex_hull(G ps) {
-	if (ps.size() <= 1) return ps;
-	sort(ps.begin(), ps.end());
-
-	G a;
-	for (auto &p : ps) {
-		if (a.empty() || abs(a.back() - p) > EPS)
-			a.push_back(p);
-	}
-	if (a.size() <= 1) return a;
-
-	G lower, upper;
-	for (auto &p : a) {
-		while (lower.size() >= 2) {
-			P A = lower[lower.size() - 2];
-			P B = lower[lower.size() - 1];
-			double cr = cross(B - A, p - A);
-			// use cr < -EPS to keep collinear
-			if (cr <= EPS)
-				lower.pop_back();
-			else
-				break;
-		}
-		lower.push_back(p);
-	}
-	for (int i = (int)a.size() - 1; i >= 0; --i) {
-		P p = a[i];
-		while (upper.size() >= 2) {
-			P A = upper[upper.size() - 2];
-			P B = upper[upper.size() - 1];
-			double cr = cross(B - A, p - A);
-			// use cr < -EPS to keep collinear
-			if (cr <= EPS)
-				upper.pop_back();
-			else
-				break;
-		}
-		upper.push_back(p);
-	}
-
-	lower.pop_back();
-	upper.pop_back();
-	G res = lower;
-	res.insert(res.end(), upper.begin(), upper.end());
-
-	if (res.empty()) return a;
-	return res;
-}
-G convex_cut(const G &g, const L &l) {
-	G Q;
-	for (int i = 0; i < (int)g.size(); i++) {
-		P A = curr(g, i), B = next(g, i);
-		if (ccw(l[0], l[1], A) != -1)
-			Q.push_back(A);
-		if (ccw(l[0], l[1], A) * ccw(l[0], l[1], B) < 0)
-			Q.push_back(crosspoint(L(A, B), l));
-	}
-	return Q;
-}
 P centroid(const vector<P> &v) {
 	double S = 0;
 	P res = P(0, 0);
@@ -215,7 +147,7 @@ bool intersectGG(const G &g1, const G &g2) {
 double distanceGP(const G &g, const P &p) {
 	if (convex_contain(g, p)) return 0;
 	double res = INF;
-	for (int i = 0; i < (int)g.size(); i++) {
+	for (int i = 0; i < g.size(); i++) {
 		res = min(res, distanceSP(L(g[i], next(g, i)), p));
 	}
 	return res;
@@ -224,24 +156,14 @@ L bisector(const P &a, const P &b) {
 	P A = (a + b) * P(0.5, 0);
 	return L(A, A + (b - a) * P(0, PI / 2));
 }
-G voronoi_cell(G g, const vector<P> &v, int s) {
-	for (int i = 0; i < (int)v.size(); i++)
-		if (i != s)
-			g = convex_cut(g, bisector(v[s], v[i]));
-	return g;
-}
 double angle(const P &a, const P &b) { // Goc dinh huong a -> b [0,2pi)
 	double ret = arg(b) - arg(a);
 	return (ret >= 0) ? ret : ret + 2 * PI;
 }
 double angle2(const P &a, const P &b) { return min(angle(a, b), angle(b, a)); }
 
-P rotate(P p, double ang) {
-	return p * P(cos(ang), sin(ang));
-}
-L rotate(L l, double ang) {
-	return L(rotate(l[0], ang), rotate(l[1], ang));
-}
+P rotate(P p, double ang) { return p * P(cos(ang), sin(ang)); }
+L rotate(L l, double ang) { return L(rotate(l[0], ang), rotate(l[1], ang)); }
 int intersectCL(const C &c, const L &l, vector<P> &res) {
     P pr = projection(l, c.p); // projection of center onto line
     double d = abs(pr - c.p);
@@ -291,140 +213,4 @@ vector<L> tangentCC(const C &c1, const C &c2) {
         }
     }
     return res;
-}
-
-G minkowski_sum(G A, G B)
-{
-	A = convex_hull(A);
-	B = convex_hull(B);
-	if (A.empty() || B.empty())
-		return G();
-	int n = (int)A.size(), m = (int)B.size();
-	auto min_index = [&](const G &g) {
-		int idx = 0;
-		for (int i = 1; i < (int)g.size(); ++i)
-			if (g[i] < g[idx])
-				idx = i;
-		return idx;
-	};
-	int ia = min_index(A), ib = min_index(B);
-	G A2, B2;
-	for (int i = 0; i < n; ++i)
-		A2.push_back(A[(ia + i) % n]);
-	for (int i = 0; i < m; ++i)
-		B2.push_back(B[(ib + i) % m]);
-
-	vector<P> res;
-	res.reserve(n + m + 5);
-	res.push_back(A2[0] + B2[0]);
-	int i = 0, j = 0;
-	while (i < n && j < m) {
-		P va = A2[(i + 1) % n] - A2[i];
-		P vb = B2[(j + 1) % m] - B2[j];
-		double cr = cross(va, vb);
-		if (cr >= -EPS) {
-			res.push_back(res.back() + va);
-			++i;
-		} else {
-			res.push_back(res.back() + vb);
-			++j;
-		}
-	}
-	while (i < n) {
-		P va = A2[(i + 1) % n] - A2[i];
-		res.push_back(res.back() + va);
-		++i;
-	}
-	while (j < m) {
-		P vb = B2[(j + 1) % m] - B2[j];
-		res.push_back(res.back() + vb);
-		++j;
-	}
-	if (!res.empty() && abs(res.front() - res.back()) < EPS)
-		res.pop_back();
-	return convex_hull(res);
-}
-
-C circle_from_2(const P &a, const P &b)
-{
-	P c = (a + b) * P(0.5, 0);
-	return C(c, abs(a - c));
-}
-
-C circle_from_3(const P &a, const P &b, const P &c)
-{
-	double ax = real(a), ay = imag(a);
-	double bx = real(b), by = imag(b);
-	double cx = real(c), cy = imag(c);
-	double d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
-	if (abs(d) < EPS)
-		return C(P(0, 0), -1);
-	double ax2 = ax * ax + ay * ay;
-	double bx2 = bx * bx + by * by;
-	double cx2 = cx * cx + cy * cy;
-	double ux = (ax2 * (by - cy) + bx2 * (cy - ay) + cx2 * (ay - by)) / d;
-	double uy = (ax2 * (cx - bx) + bx2 * (ax - cx) + cx2 * (bx - ax)) / d;
-	P center = P(ux, uy);
-	return C(center, abs(center - a));
-}
-
-bool contains(const C &c, const P &p)
-{
-	if (c.r < 0)
-		return false;
-	return abs(p - c.p) <= c.r + EPS;
-}
-
-C trivial_circle(const vector<P> &R)
-{
-	if (R.empty())
-		return C(P(0, 0), -1);
-	if (R.size() == 1)
-		return C(R[0], 0);
-	if (R.size() == 2)
-		return circle_from_2(R[0], R[1]);
-	C c = circle_from_3(R[0], R[1], R[2]);
-	if (c.r >= 0)
-		return c;
-	double best = -1;
-	C bestc;
-	for (int i = 0; i < 3; ++i)
-		for (int j = i + 1; j < 3; ++j) {
-			C tmp = circle_from_2(R[i], R[j]);
-			bool ok = true;
-			for (int k = 0; k < 3; ++k)
-				if (!contains(tmp, R[k]))
-					ok = false;
-			if (ok && (best < 0 || tmp.r < best)) {
-				best = tmp.r;
-				bestc = tmp;
-			}
-		}
-	return bestc;
-}
-
-C welzl(vector<P> &pts, vector<P> &R, int n)
-{
-	if (n == 0 || R.size() == 3)
-		return trivial_circle(R);
-	P p = pts[n - 1];
-	C D = welzl(pts, R, n - 1);
-	if (D.r >= 0 && contains(D, p))
-		return D;
-	R.push_back(p);
-	C D2 = welzl(pts, R, n - 1);
-	R.pop_back();
-	return D2;
-}
-
-C minimum_enclosing_circle(G pts)
-{
-	random_device rd;
-	mt19937_64 g(rd());
-	shuffle(pts.begin(), pts.end(), g);
-	vector<P> R;
-	C ans = welzl(pts, R, (int)pts.size());
-	if (ans.r < 0)
-		return C(P(0, 0), 0);
-	return ans;
 }

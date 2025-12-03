@@ -1,29 +1,16 @@
 class Line {
  public:
   long long a, b;
-  Line(int _a, int _b) {
-    a = _a;
-    b = _b;
-  }
-  Line() {
-    a = 0;
-    b = 0;
-  }
+  Line(int _a, int _b) { a = _a; b = _b; }
+  Line() { a = 0; b = 0; }
   long long getY(int y) { return a * y + b; }
 };
 class Node {
  public:
   Line line;
   Node *leftNode, *rightNode;
-  Node(Line _line) {
-    line = _line;
-    leftNode = NULL;
-    rightNode = NULL;
-  }
-  Node() {
-    leftNode = NULL;
-    rightNode = NULL;
-  }
+  Node(Line _line) { line = _line; leftNode = NULL; rightNode = NULL; }
+  Node() { leftNode = NULL; rightNode = NULL; }
 };
 class IntervalLineTree {
  private:
@@ -74,17 +61,13 @@ class IntervalLineTree {
     int mid = (lo + hi) >> 1;
     if (node->leftNode != NULL)
       res = max(res, get(node->leftNode, lo, mid, pos));
-    if (node->rightNode != NULL) {
+    if (node->rightNode != NULL)
       res = max(res, get(node->rightNode, mid + 1, hi, pos));
-    }
     return res;
   }
 
  public:
-  IntervalLineTree(int _n) {
-    n = _n;
-    root = new Node();
-  }
+  IntervalLineTree(int _n) { n = _n; root = new Node(); }
   void update(Line &line) { update(root, 1, n, line); }
   long long get(int pos) { return get(root, 1, n, pos); }
 };

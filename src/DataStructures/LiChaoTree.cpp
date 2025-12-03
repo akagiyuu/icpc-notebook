@@ -3,7 +3,6 @@ struct Line {
     Line(long long _a = 0, long long _b = LLONG_MAX) : a(_a), b(_b) {}
     long long get(long long x) const { return a * x + b; }
 };
-
 struct LiChaoTree {
     struct Node {
         Line line;
@@ -35,15 +34,12 @@ struct LiChaoTree {
         bool mid_better = (isMax ? nw.get(mid) > node->line.get(mid)
                                  : nw.get(mid) < node->line.get(mid));
 
-        if (mid_better)
-            swap(nw, node->line);
+        if (mid_better) swap(nw, node->line);
 
         if (r - l == 0) return;
 
-        if (left_better != mid_better)
-            add_line(node->l, l, mid, nw);
-        else
-            add_line(node->r, mid + 1, r, nw);
+        if (left_better != mid_better) add_line(node->l, l, mid, nw);
+        else add_line(node->r, mid + 1, r, nw);
     }
 
     void add_segment(Line nw, long long L, long long R) {

@@ -77,8 +77,6 @@ void dfs(int u, int p, bool keep){
     }
 }
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
     cin >> n;
     g.assign(n+1, {});
     val.assign(n+1, 0);
@@ -95,8 +93,7 @@ int main(){
     ans.assign(n+1,0); freqCnt.assign(2,0);
     cnt.clear(); maxFreq = 0;
     dfs(1,0,true);
-    for(int i=1;i<=n;i++){
+    for(int i=1;i<=n;i++)
         cout << ans[i] << (i==n?'\n':' ');
-    }
     return 0;
 }

@@ -1,11 +1,7 @@
 ll dp[20][200][2][2];
 int digits[20];
-
 ll dfs(int pos, int sum, bool tight, bool leading) {
-    if (pos == -1) {
-        // Base case: all digits processed
-        return (sum % 3 == 0 && !leading);
-    }
+    if (pos == -1) return (sum % 3 == 0 && !leading);
     ll &res = dp[pos][sum][tight][leading];
     if (res != -1) return res;
     res = 0;
@@ -16,8 +12,7 @@ ll dfs(int pos, int sum, bool tight, bool leading) {
         res += dfs(pos - 1, (sum + d) % 3, ntight, nlead);
     }
     return res;
-}
-
+ }
 ll solve(ll x) {
     if (x < 0) return 0;
     int len = 0;
