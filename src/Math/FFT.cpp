@@ -20,7 +20,6 @@ unsigned round_up(unsigned v) {
 	v |= v >> 16;
 	return v + 1;
 }
-
 int reverse_bits(int num, int lg) {
 	int res = 0;
 	for (int i = 0; i < lg; ++i)
@@ -28,7 +27,6 @@ int reverse_bits(int num, int lg) {
 			res |= 1 << (lg - i - 1);
 	return res;
 }
-
 vector<Complex> fft(vector<Complex> a, bool invert) {
 	int n = (int)a.size();
 	int lg = 0;
