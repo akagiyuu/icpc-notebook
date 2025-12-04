@@ -22,7 +22,7 @@ jobs:
 
       - run: sudo apt-get install texlive -y
 
-      - run: codes2pdf ./src -a "FPTU-SRO"
+      - run: codes2pdf ./src -a "FPTU-SRO" -i "SRO"
 
       - id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
