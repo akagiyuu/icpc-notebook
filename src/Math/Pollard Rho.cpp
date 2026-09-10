@@ -9,8 +9,8 @@ bool is_prime(ull n) {
         if (n % p == 0) return n == p;
     }
     ull d = n - 1;
-    int s = 0;
-    while ((d & 1) == 0) { d >>= 1; ++s; }
+    int s = __builtin_ctzll(d);
+    d >>= s;
     auto check = [&](ull a)->bool {
         if (a % n == 0) return true;
         ull x = modpow(a, d, n);
