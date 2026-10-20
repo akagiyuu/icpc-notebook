@@ -12,11 +12,11 @@ void build() {
             is_composite[i * pr[j]] = true;
             if (i % pr[j] == 0) {
                 // f(i * p) = f(i / p^k) * f(p^(k + 1))
-                f[i * pr[j]] = f[i / binpow(pr[j], cnt[i])] * f_pk(i, cnt[i + 1]);
+                f[i * pr[j]] = f[i / binpow(pr[j], cnt[i])] * f_pk(i, cnt[i] + 1);
                 cnt[i * pr[j]] = cnt[i] + 1;
                 break;
             } else {
-                f[i * f[j]] = f[i] * f[pr[j]];
+                f[i * pr[j]] = f[i] * f[pr[j]];
                 cnt[i * pr[j]] = 1;
             }
         }
