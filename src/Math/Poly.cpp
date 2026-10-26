@@ -8,38 +8,11 @@ static inline size_t trailing_xk(const Poly &a) {
     return a.size();
 }
 static Poly mul_truncate(const Poly &a, const Poly &b, size_t n);
-static inline Poly mul_xk(const Poly &a, size_t k) {
-    if (a.empty()) return {};
-    Poly r;
-    r.reserve(k + a.size());
-    r.assign(k, 0);
-    r.insert(r.end(), a.begin(), a.end());
-    return r;
-}
-static inline Poly div_xk(const Poly &a, size_t k) {
-    if (a.size() <= k) return {};
-    return Poly(a.begin() + k, a.end());
-}
-static inline Poly mod_xk(const Poly &a, size_t k) {
-    if (k == 0) return {};
-    Poly r(min(a.size(), k));
-    for (size_t i = 0; i < r.size(); ++i) r[i] = a[i];
-    norm(r);
-    return r;
-}
-static inline Poly derivative(const Poly &a) {
-    if (a.size() <= 1) return {};
-    Poly r(a.size() - 1);
-    for (size_t i = 1; i < a.size(); ++i) r[i - 1] = mulmod(a[i], (int)i);
-    norm(r);
-    return r;
-}
-static Poly integral(const Poly &a) {
-    Poly r(a.size() + 1, 0);
-    for (size_t i = 0; i < a.size(); ++i) r[i + 1] = mulmod(a[i], inv_mod(i + 1));
-    norm(r);
-    return r;
-}
+static inline Poly mul_xk(const Poly &a, size_t k);
+static inline Poly div_xk(const Poly &a, size_t k);
+static inline Poly mod_xk(const Poly &a, size_t k);
+static inline Poly derivative(const Poly &a);
+static Poly integral(const Poly &a);
 static Poly invert_poly(const Poly &a_in, size_t n) {
     assert(n > 0);
     Poly a = a_in; norm(a);
@@ -141,7 +114,7 @@ static Poly pow_poly(const Poly &p_in, int k, size_t n) {
     int deg = (int)p.size() - 1;
     if (deg <= THRESHOLD) return pow_dn(p, k, n);
 
-    if (k <= THRESHOLD) { // smaint k -> exponentiation by squaring using mul_truncate
+    if (k <= THRESHOLD) {
         if (k == 0) { Poly one(1,1); return mod_xk(one,n); }
         Poly base = mod_xk(p, n);
         Poly res(1,1);
