@@ -1,0 +1,21 @@
+\[
+\begin{aligned}
+f(x)
+= \sum_{i=0}^{n} f(x_i)
+   \frac{\displaystyle\prod_{j\ne i}(x-x_j)}
+        {\displaystyle\prod_{j\ne i}(x_i-x_j)}
+= \sum_{i=0}^{n} f(i)
+   \frac{\displaystyle\prod_{j\ne i}(x-j)}
+        {\displaystyle\prod_{j\ne i}(i-j)}.
+\end{aligned}
+\]
+
+\[
+\begin{aligned}
+\prod_{j\ne i}(i-j)
+&= i!(-1)^{n-i}(n-i)!, \\[4pt]
+\prod_{j\ne i}(x-j)
+&= \operatorname{prefix}_x(i-1)
+   \operatorname{suffix}_x(i+1).
+\end{aligned}
+\]
