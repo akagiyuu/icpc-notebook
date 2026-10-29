@@ -28,10 +28,8 @@ void decompose(int u, int p) {
     vis[c] = 1;
     par_centroid[c] = (p == -1 ? c : p);
 
-    // xử lý tại centroid hiện tại
     process_centroid(c);
 
-    // phân rã các nhánh con
     for (int v : adj[c]) {
         if (!vis[v])
             decompose(v, c);
