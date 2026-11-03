@@ -13,12 +13,13 @@ int gauss(vector<vector<double> > a, vector<double> &ans) {
 			swap(a[sel][i], a[row][i]);
 		where[col] = row;
 
-		for (int i = 0; i < n; ++i)
-			if (i == row) {
+		for (int i = 0; i < n; ++i) {
+			if (i != row) {
 				double c = a[i][col] / a[row][col];
 				for (int j = col; j <= m; ++j)
 					a[i][j] -= a[row][j] * c;
 			}
+		}
 		++row;
 	}
 
