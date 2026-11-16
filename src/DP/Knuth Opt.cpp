@@ -1,8 +1,8 @@
-It must satisfy two conditions:
+//It must satisfy two conditions:
 
-A, B, C, D such that A ≤ B ≤ C ≤ D
-COST(B, C) ≤ COST(A, D)
-COST(A, C) + COST(B, D) ≤ COST(A, D) + COST(B, C)
+//A, B, C, D such that A <= B <= C <= D
+//COST(B, C) <= COST(A, D)
+//COST(A, C) + COST(B, D) <= COST(A, D) + COST(B, C)
 
 int KNUTH() {
     int N;
